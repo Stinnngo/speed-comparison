@@ -1,16 +1,16 @@
 name: "[Dagger] CI"
 
 on:
-  push:
-    paths:
-      - "src/leibniz.*"
-      - "src/rounds.txt"
-      - "dagger-poc/languages.py"
-      - "dagger-poc/benchmark.py"
-      - "dagger-poc/build_images.py"
-      - "dagger-poc/scmeta.py"
-    branches:
-      - master
+  # push:
+  #   paths:
+  #     - "src/leibniz.*"
+  #     - "src/rounds.txt"
+  #     - "dagger-poc/languages.py"
+  #     - "dagger-poc/benchmark.py"
+  #     - "dagger-poc/build_images.py"
+  #     - "dagger-poc/scmeta.py"
+  #   branches:
+  #     - master
   pull_request:
     paths:
       - "src/leibniz.*"
