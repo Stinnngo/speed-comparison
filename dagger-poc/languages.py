@@ -703,7 +703,7 @@ LANGUAGES: dict[str, Language] = {
     ),
     "gleam": Language(
         name="Gleam",
-        nixpkgs=("gleam@1.13.0", "erlang@27.2"),
+        nixpkgs=("gleam@1.14.0", "erlang@27.2"),
         nix_setup="gleam new leibniz_app && cd leibniz_app && sed -i 's/\\[dependencies\\]/[dependencies]\\nsimplifile = \"~> 2.0\"/' gleam.toml && gleam deps download",
         file="leibniz.gleam",
         # Build in leibniz_app, then run with output to /app level
