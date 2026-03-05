@@ -2,12 +2,10 @@
 
 rounds = csvread('rounds.txt');
 
-x = 1;
 pi = 1;
 
-for ii=2:rounds
-    x = -1 * x;
-    pi = pi + x / (2 * ii - 1);
+for ii=1:rounds
+    pi += (-1) ^ ii / (2 * ii + 1);
 end
 
 pi = pi * 4;
