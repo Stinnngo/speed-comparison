@@ -48,6 +48,7 @@ ICON_MAP = {
     "Python (CPython)": "python",
     "Python (PyPy)": "python",
     "Python (NumPy)": "python",
+    "Python (Numba)": "python",
     "Python (MyPyC)": "python",
     "Python (mypyc)": "python",
     "MicroPython": "python",
@@ -67,6 +68,7 @@ ICON_MAP = {
     "Gleam": "gleam",
     "Racket": "racket",
     "Common Lisp (SBCL)": "lisp",
+    "Common Lisp (SBCL SIMD)": "lisp",
     "Swift": "swift",
     "Swift (relaxed)": "swift",
     "Swift (SIMD)": "swift",
@@ -87,6 +89,8 @@ ICON_MAP = {
     "Janet": "janet",
     "Janet (compiled)": "janet",
     "WASM (C via Wasmtime)": "wasm",
+    "Octave": "octave",
+    "Octave (Vectorised)": "octave",
 }
 
 
