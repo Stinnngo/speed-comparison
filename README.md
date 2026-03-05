@@ -1,6 +1,6 @@
 [![CI](https://github.com/niklas-heer/speed-comparison/actions/workflows/ci.yml/badge.svg)](https://github.com/niklas-heer/speed-comparison/actions/workflows/ci.yml)
 
-![plot](https://github.com/niklas-heer/speed-comparison/history/latest/combined_results.png "Speed comparison of programming languages")
+![plot](https://github.com/niklas-heer/speed-comparison/docs/history/latest/combined_results.png "Speed comparison of programming languages")
 
 ---
 
