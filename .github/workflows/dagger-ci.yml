@@ -59,7 +59,7 @@ jobs:
   # PR Comment Handler (/dagger-bench command)
   # ==========================================================================
   parse-comment:
-    runs-on: ubicloud-standard-2
+    runs-on: ubuntu-latest
     if: github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/dagger-bench')
     outputs:
       languages: ${{ steps.parse.outputs.languages }}
@@ -163,7 +163,7 @@ jobs:
   bench-comment:
     needs: parse-comment
     if: needs.parse-comment.outputs.should_run == 'true'
-    runs-on: ubicloud-standard-4
+    runs-on: ubuntu-latest
     permissions:
       checks: write
       pull-requests: write
@@ -314,7 +314,7 @@ jobs:
 
   # Determine what to build and benchmark
   prepare:
-    runs-on: ubicloud-standard-2
+    runs-on: ubuntu-latest
     if: github.event_name != 'issue_comment'
     permissions:
       contents: read
@@ -438,7 +438,7 @@ jobs:
   build:
     needs: prepare
     if: needs.prepare.outputs.has_builds == 'true'
-    runs-on: ubicloud-standard-4
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -488,7 +488,7 @@ jobs:
       always() &&
       needs.prepare.outputs.has_benchmarks == 'true' &&
       (needs.build.result == 'success' || needs.build.result == 'skipped')
-    runs-on: ubicloud-standard-4
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read
@@ -561,7 +561,7 @@ jobs:
   analyze:
     needs: [prepare, benchmark]
     if: always() && needs.prepare.outputs.has_benchmarks == 'true' && needs.benchmark.result == 'success'
-    runs-on: ubicloud-standard-2
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -614,7 +614,7 @@ jobs:
   # Final summary
   summary:
     needs: [prepare, build, benchmark, analyze]
-    runs-on: ubicloud-standard-2
+    runs-on: ubuntu-latest
     if: always() && github.event_name != 'issue_comment'
     steps:
       - name: Summary
