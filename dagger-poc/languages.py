@@ -596,7 +596,7 @@ LANGUAGES: dict[str, Language] = {
     ),
     "octave": Language(
         name="Octave",
-        nixpkgs=("octave@11.1.0",),
+        nixpkgs=("octave@10.3.0",),
         file="leibniz_octave.m",
         run="octave leibniz_octave.m",
         version_cmd="octave -v",
@@ -605,7 +605,7 @@ LANGUAGES: dict[str, Language] = {
     ),
     "octave-vectorised": Language(
         name="Octave (Vectorised)",
-        nixpkgs=("octave@11.1.0",),
+        nixpkgs=("octave@10.3.0",),
         file="leibniz_octave_vectorised.m",
         run="octave leibniz_octave_vectorised.m",
         version_cmd="octave -v",
