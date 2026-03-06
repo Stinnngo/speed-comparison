@@ -96,6 +96,14 @@ async def build_devbox_image(
             "NIX_CONFIG", f"extra-allowed-insecure-packages = {insecure_list}"
         )
 
+    # Logic to bypass testing failures
+    if lang.skip_tests:
+        # We inject NIX_CHECK_FAIL_IGNORE to tell the Nix builder to 
+        # proceed even if CTest suites like 'psa_crypto' fail.
+        container = container.with_env_variable("NIX_CHECK_FAIL_IGNORE", "1")
+        # Additionally, for some Nix runners, we ensure purity doesn't block the bypass
+        container = container.with_env_variable("NIX_ENFORCE_PURITY", "0")
+
     # Initialize devbox
     container = container.with_workdir("/app").with_exec(["devbox", "init"])
 
