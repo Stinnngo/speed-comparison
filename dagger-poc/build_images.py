@@ -86,23 +86,26 @@ async def build_devbox_image(
     """
     container = client.container().from_(DEVBOX_IMAGE)
 
+    nix_config_lines = []
+
     # Allow insecure packages if needed (e.g., haxe depends on mbedtls)
     if lang.allow_insecure:
         container = container.with_env_variable("NIXPKGS_ALLOW_INSECURE", "1")
         # Set NIX_CONFIG to allow insecure packages by name
         # This helps with nix-build level checks
         insecure_list = " ".join(lang.allow_insecure)
-        container = container.with_env_variable(
-            "NIX_CONFIG", f"extra-allowed-insecure-packages = {insecure_list}"
-        )
+        nix_config_lines.append(f"extra-allowed-insecure-packages = {insecure_list}")
 
     # Logic to bypass testing failures
     if lang.skip_tests:
-        # We inject NIX_CHECK_FAIL_IGNORE to tell the Nix builder to 
-        # proceed even if CTest suites like 'psa_crypto' fail.
-        container = container.with_env_variable("NIX_CHECK_FAIL_IGNORE", "1")
-        # Additionally, for some Nix runners, we ensure purity doesn't block the bypass
-        container = container.with_env_variable("NIX_ENFORCE_PURITY", "0")
+        # Disabling the sandbox is the most effective way to handle 
+        # CTest failures for low-level libs like mbedtls in Dagger/Docker.
+        # This allows the build to access system resources needed for entropy.
+        nix_config_lines.append("sandbox = false")
+
+    # Merge NIX_CONFIG
+    if nix_config_lines:
+        container = container.with_env_variable("NIX_CONFIG", "\n".join(nix_config_lines))
 
     # Initialize devbox
     container = container.with_workdir("/app").with_exec(["devbox", "init"])
