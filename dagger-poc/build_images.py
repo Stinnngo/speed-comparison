@@ -95,7 +95,7 @@ async def build_devbox_image(
         # We create a Nix expression that overrides doCheck for specified packages.
         overrides = " ".join([
             f"{pkg} = pkgs.{pkg}.overrideAttrs (old: {{ doCheck = false; }});"
-            for pkg in lang.skip_test_packages
+            for pkg in lang.skip_tests
         ])
         
         # This tells Nix to ignore the checkPhase for these specific libraries
