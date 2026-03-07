@@ -82,8 +82,8 @@ class Language:
     # e.g., haxe depends on mbedtls which is marked insecure
     allow_insecure: tuple[str, ...] = ()
 
-    # Logic to bypass checkPhase failures during Nix builds
-    skip_tests: bool = False
+    # Specific packages that should skip their test/check phase
+    skip_test: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         """Validate configuration on creation."""
@@ -824,7 +824,7 @@ LANGUAGES: dict[str, Language] = {
         base="haxe",
         category="compiled",
         allow_insecure=("mbedtls-2.28.10",),  # haxe depends on insecure mbedtls
-        skip_tests=True,  # Enable test bypassing for the mbedtls failure
+        skip_test=("mbedtls",),  # Explicitly target mbedtls to skip its failing CTests
     ),
     # =========================================================================
     # WebAssembly
