@@ -91,11 +91,11 @@ async def build_devbox_image(
         container = container.with_env_variable("NIXPKGS_ALLOW_INSECURE", "1")
 
     # Skip tests for packages if needed (e.g., mbedtls)
-    if lang.skip_tests:
+    if lang.skip_test:
         # We create a Nix expression that overrides doCheck for specified packages.
         overrides = " ".join([
             f"{pkg} = pkgs.{pkg}.overrideAttrs (old: {{ doCheck = false; }});"
-            for pkg in lang.skip_tests
+            for pkg in lang.skip_test
         ])
         
         # This tells Nix to ignore the checkPhase for these specific libraries
