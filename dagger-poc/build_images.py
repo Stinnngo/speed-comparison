@@ -90,10 +90,25 @@ async def build_devbox_image(
     if lang.allow_insecure:
         container = container.with_env_variable("NIXPKGS_ALLOW_INSECURE", "1")
 
-    # Logic to bypass testing failures
+    # Skip tests for packages if needed (e.g., mbedtls)
     if lang.skip_tests:
-        # Disabling the sandbox is the most effective way to handle 
-        # CTest failures for low-level libs like mbedtls in Dagger/Docker.
+        # We create a Nix expression that overrides doCheck for specified packages.
+        overrides = " ".join([
+            f"{pkg} = pkgs.{pkg}.overrideAttrs (old: {{ doCheck = false; }});"
+            for pkg in lang.skip_test_packages
+        ])
+        
+        # This tells Nix to ignore the checkPhase for these specific libraries
+        nix_config_content = f"{{ packageOverrides = pkgs: rec {{ {overrides} }}; }}"
+        
+        config_path = "/tmp/nixpkgs_config.nix"
+        container = (
+            container
+            .with_new_file(config_path, nix_config_content)
+            # Standard Nix variable to load custom package logic
+            .with_env_variable("NIXPKGS_CONFIG", config_path)
+        )
+        
         # This allows the build to access system resources needed for entropy.
         container = container.with_env_variable(
             "NIX_CONFIG", 
