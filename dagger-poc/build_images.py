@@ -101,18 +101,14 @@ async def build_devbox_image(
         # This tells Nix to ignore the checkPhase for these specific libraries
         nix_config_content = f"{{ packageOverrides = pkgs: rec {{ {overrides} }}; }}"
         
-        config_path = "/tmp/nixpkgs_config.nix"
+        config_path = "/root/.config/nixpkgs"
         container = (
             container
+            .with_exec(["mkdir", "-p", config_path])
             .with_new_file(config_path, nix_config_content)
-            # Standard Nix variable to load custom package logic
-            .with_env_variable("NIXPKGS_CONFIG", config_path)
-        )
-        
-        # This allows the build to access system resources needed for entropy.
-        container = container.with_env_variable(
-            "NIX_CONFIG", 
-            "sandbox = false"
+            .with_env_variable("HOME", "/root")
+            # This allows the build to access system resources needed for entropy.
+            .with_env_variable("NIX_CONFIG", "sandbox = false")
         )
 
     # Initialize devbox
