@@ -82,9 +82,6 @@ class Language:
     # e.g., haxe depends on mbedtls which is marked insecure
     allow_insecure: tuple[str, ...] = ()
 
-    # Building CFLAGS for Devbox packages
-    pkg_cflags: Optional[str] = None
-
     def __post_init__(self) -> None:
         """Validate configuration on creation."""
         # Validate file name
@@ -824,7 +821,6 @@ LANGUAGES: dict[str, Language] = {
         base="haxe",
         category="compiled",
         allow_insecure=("mbedtls-2.28.10",),  # haxe depends on insecure mbedtls
-        pkg_cflags="-fzero-init-padding-bits=unions",  # For passing the Ctest of mbedtls
     ),
     # =========================================================================
     # WebAssembly
