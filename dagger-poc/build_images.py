@@ -90,26 +90,9 @@ async def build_devbox_image(
     if lang.allow_insecure:
         container = container.with_env_variable("NIXPKGS_ALLOW_INSECURE", "1")
 
-    # Skip tests for packages if needed (e.g., mbedtls)
-    if lang.skip_test:
-        # We create a Nix expression that overrides doCheck for specified packages.
-        overrides = " ".join([
-            f"{pkg} = pkgs.{pkg}.overrideAttrs (old: {{ doCheck = false; }});"
-            for pkg in lang.skip_test
-        ])
-        
-        # This tells Nix to ignore the checkPhase for these specific libraries
-        nix_config_content = f"{{ packageOverrides = pkgs: rec {{ {overrides} }}; }}"
-        
-        config_path = "/root/.config/nixpkgs"
-        container = (
-            container
-            .with_exec(["mkdir", "-p", config_path])
-            .with_new_file(f"{config_path}/config.nix", nix_config_content)
-            .with_env_variable("HOME", "/root")
-            # This allows the build to access system resources needed for entropy.
-            .with_env_variable("NIX_CONFIG", "sandbox = false")
-        )
+    # Setup CFLAGS env for building packages
+    if lang.pkg_cflags:
+        container = container.with_env_variable("NIX_CFLAGS_COMPILE", lang.pkg_cflags)
 
     # Initialize devbox
     container = container.with_workdir("/app").with_exec(["devbox", "init"])
