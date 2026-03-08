@@ -217,7 +217,7 @@ def main():
 
     args = parser.parse_args()
 
-    registry = lower(os.environ.get("REGISTRY", DEFAULT_REGISTRY))
+    registry = os.environ.get("REGISTRY", DEFAULT_REGISTRY).lower()
 
     if args.verbose:
         print(f"Registry: {registry}", file=sys.stderr)
