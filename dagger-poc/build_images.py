@@ -105,7 +105,7 @@ async def build_devbox_image(
         container = (
             container
             .with_exec(["mkdir", "-p", config_path])
-            .with_new_file(config_path, nix_config_content)
+            .with_new_file(f"{config_path}/config.nix", nix_config_content)
             .with_env_variable("HOME", "/root")
             # This allows the build to access system resources needed for entropy.
             .with_env_variable("NIX_CONFIG", "sandbox = false")
