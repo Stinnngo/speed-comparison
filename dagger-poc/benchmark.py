@@ -339,7 +339,7 @@ async def main(targets: list[str] | None = None) -> int:
     # Configuration from environment
     quick_rounds = os.environ.get("QUICK_TEST_ROUNDS")
     use_local = os.environ.get("USE_LOCAL_IMAGES", "").lower() in ("1", "true", "yes")
-    registry = lower(os.environ.get("REGISTRY", DEFAULT_REGISTRY))
+    registry = os.environ.get("REGISTRY", DEFAULT_REGISTRY).lower()
 
     # Determine which languages to benchmark
     if targets:
