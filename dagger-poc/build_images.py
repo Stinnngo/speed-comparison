@@ -90,10 +90,6 @@ async def build_devbox_image(
     if lang.allow_insecure:
         container = container.with_env_variable("NIXPKGS_ALLOW_INSECURE", "1")
 
-    # Setup CFLAGS env for building packages
-    if lang.pkg_cflags:
-        container = container.with_env_variable("CFLAGS", lang.pkg_cflags)
-
     # Initialize devbox
     container = container.with_workdir("/app").with_exec(["devbox", "init"])
 
