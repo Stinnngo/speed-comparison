@@ -92,7 +92,7 @@ async def build_devbox_image(
 
     # Setup CFLAGS env for building packages
     if lang.pkg_cflags:
-        container = container.with_env_variable("NIX_CFLAGS_COMPILE", lang.pkg_cflags)
+        container = container.with_env_variable("CFLAGS", lang.pkg_cflags)
 
     # Initialize devbox
     container = container.with_workdir("/app").with_exec(["devbox", "init"])
