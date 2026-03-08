@@ -214,7 +214,7 @@ async def main(
     only one image is built.
     """
 
-    registry = os.environ.get("REGISTRY", DEFAULT_REGISTRY)
+    registry = lower(os.environ.get("REGISTRY", DEFAULT_REGISTRY))
 
     # Determine which base images to build
     if targets:
