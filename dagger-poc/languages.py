@@ -338,10 +338,10 @@ LANGUAGES: dict[str, Language] = {
         compile=(
             SWIFT_C_INCLUDE_PATH +
             " nix_shell -E "
-            "'with import <nixpkgs> {}; "
-            "pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } "
-            "{ buildInputs = [ swift swiftPackages.Foundation ]; "
-            "LD_LIBRARY_PATH = \"${swiftPackages.Dispatch}/lib\"; }' && "
+            "'with import <nixpkgs> {{}}; "
+            "pkgs.mkShell.override {{ inherit (pkgs.swift) stdenv; }} "
+            "{{ buildInputs = [ swift swiftPackages.Foundation ]; "
+            "LD_LIBRARY_PATH = \"${swiftPackages.Dispatch}/lib\"; }}' && "
             "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
         ),
         run="./leibniz",
