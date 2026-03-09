@@ -32,6 +32,12 @@ MARCH_NATIVE = "-march=native"
 SWIFT_C_INCLUDE_PATH = (
     "C_INCLUDE_PATH=$(gcc -print-file-name=include)${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
 )
+SWIFT_ENV_SETUP = (
+    "export LIBGCC_DIR=$(gcc -print-libgcc-file-name | xargs dirname) && "
+    "export CPATH=$(gcc -print-file-name=include) && "
+    "export LIBRARY_PATH=$LIBGCC_DIR:$LIBRARY_PATH && "
+    "export LD_LIBRARY_PATH=$LIBGCC_DIR:$LD_LIBRARY_PATH"
+)
 
 # =============================================================================
 # Language Configuration
@@ -335,8 +341,10 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            SWIFT_C_INCLUDE_PATH
-            + " swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
+            SWIFT_C_INCLUDE_PATH +
+            f" {SWIFT_ENV_SETUP} && "
+            "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full "
+            "-Xcc -I $CPATH -L $LIBGCC_DIR"
         ),
         run="./leibniz",
         version_cmd="swift --version",
