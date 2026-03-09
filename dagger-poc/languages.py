@@ -342,7 +342,7 @@ LANGUAGES: dict[str, Language] = {
         file="leibniz.swift",
         compile=(
             SWIFT_C_INCLUDE_PATH +
-            f" nix_shell -E {shlex.quote(SWIFT_NIX_EXPR)} && "
+            f" nix-shell -E {shlex.quote(SWIFT_NIX_EXPR)} && "
             "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
         ),
         run="./leibniz",
