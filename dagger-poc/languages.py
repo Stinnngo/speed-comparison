@@ -18,7 +18,7 @@ To add a new language:
 
 from __future__ import annotations
 
-import re
+import re, shlex
 from dataclasses import dataclass
 from typing import Optional
 
@@ -32,7 +32,12 @@ MARCH_NATIVE = "-march=native"
 SWIFT_C_INCLUDE_PATH = (
     "C_INCLUDE_PATH=$(gcc -print-file-name=include)${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
 )
-
+SWIFT_NIX_EXPR = (
+    "with import <nixpkgs> {}; "
+    "pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } "
+    "{ buildInputs = [ swift swiftPackages.Foundation ]; "
+    "LD_LIBRARY_PATH = \"${swiftPackages.Dispatch}/lib\"; }"
+)
 
 # =============================================================================
 # Language Configuration
@@ -337,11 +342,7 @@ LANGUAGES: dict[str, Language] = {
         file="leibniz.swift",
         compile=(
             SWIFT_C_INCLUDE_PATH +
-            " nix_shell -E "
-            "'with import <nixpkgs> {{}}; "
-            "pkgs.mkShell.override {{ inherit (pkgs.swift) stdenv; }} "
-            "{{ buildInputs = [ swift swiftPackages.Foundation ]; "
-            "LD_LIBRARY_PATH = \"${swiftPackages.Dispatch}/lib\"; }}' && "
+            f" nix_shell -E {shlex.quote(SWIFT_NIX_EXPR)} && "
             "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
         ),
         run="./leibniz",
