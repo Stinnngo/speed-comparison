@@ -33,10 +33,11 @@ SWIFT_C_INCLUDE_PATH = (
     "C_INCLUDE_PATH=$(gcc -print-file-name=include)${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
 )
 SWIFT_ENV_SETUP = (
-    "export LIBGCC_DIR=$(gcc -print-libgcc-file-name | xargs dirname) && "
-    "export CPATH=$(gcc -print-file-name=include) && "
-    "export LIBRARY_PATH=$LIBGCC_DIR:$LIBRARY_PATH && "
-    "export LD_LIBRARY_PATH=$LIBGCC_DIR:$LD_LIBRARY_PATH"
+    "export DISPATCH_LIB=$(find /nix/store -maxdepth 2 -name '*swift-corelibs-dispatch*' -type d -path '*/lib' | head -n 1) && "
+    "export DISPATCH_INC=$(find /nix/store -maxdepth 2 -name '*swift-corelibs-dispatch*' -type d -path '*/include' | head -n 1) && "
+    "export GCC_INC=$(gcc -print-file-name=include) && "
+    "export LD_LIBRARY_PATH=$DISPATCH_LIB:$LD_LIBRARY_PATH && "
+    "export CPATH=$GCC_INC:$DISPATCH_INC:$CPATH"
 )
 
 # =============================================================================
@@ -344,7 +345,7 @@ LANGUAGES: dict[str, Language] = {
             SWIFT_C_INCLUDE_PATH +
             f" {SWIFT_ENV_SETUP} && "
             "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full "
-            "-Xcc -I $CPATH -L $LIBGCC_DIR"
+            "-I $DISPATCH_INC -L $DISPATCH_LIB"
         ),
         run="./leibniz",
         version_cmd="swift --version",
