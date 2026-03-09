@@ -344,6 +344,7 @@ LANGUAGES: dict[str, Language] = {
         compile=(
             SWIFT_C_INCLUDE_PATH +
             f" {SWIFT_ENV_SETUP} && "
+            "echo $LD_LIBRARY_PATH && echo $CPATH && "
             "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full "
             "-I $DISPATCH_INC -L $DISPATCH_LIB"
         ),
