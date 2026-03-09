@@ -32,13 +32,7 @@ MARCH_NATIVE = "-march=native"
 SWIFT_C_INCLUDE_PATH = (
     "C_INCLUDE_PATH=$(gcc -print-file-name=include)${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
 )
-SWIFT_ENV_SETUP = (
-    "export DISPATCH_LIB=$(find /nix/store -maxdepth 2 -name '*swift-corelibs-dispatch*' -type d -path '*/lib' | head -n 1) && "
-    "export DISPATCH_INC=$(find /nix/store -maxdepth 2 -name '*swift-corelibs-dispatch*' -type d -path '*/include' | head -n 1) && "
-    "export GCC_INC=$(gcc -print-file-name=include) && "
-    "export LD_LIBRARY_PATH=$DISPATCH_LIB:$LD_LIBRARY_PATH && "
-    "export CPATH=$GCC_INC:$DISPATCH_INC:$CPATH"
-)
+
 
 # =============================================================================
 # Language Configuration
@@ -343,10 +337,12 @@ LANGUAGES: dict[str, Language] = {
         file="leibniz.swift",
         compile=(
             SWIFT_C_INCLUDE_PATH +
-            f" {SWIFT_ENV_SETUP} && "
-            "echo $LD_LIBRARY_PATH && echo $CPATH && "
-            "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full "
-            "-I $DISPATCH_INC -L $DISPATCH_LIB"
+            " nix_shell -E "
+            "'with import <nixpkgs> {}; "
+            "pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } "
+            "{ buildInputs = [ swift swiftPackages.Foundation ]; "
+            "LD_LIBRARY_PATH = \"${swiftPackages.Dispatch}/lib\"; }' && "
+            "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
         ),
         run="./leibniz",
         version_cmd="swift --version",
