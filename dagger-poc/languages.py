@@ -59,6 +59,7 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
       -Xlinker -rpath -Xlinker $SWIFT_LIB \
       -Xlinker -rpath -Xlinker $DISPATCH_LIB \
       -Xlinker -rpath -Xlinker $FOUNDATION_LIB"
+    export LD_LIBRARY_PATH="$SWIFT_LIB:$DISPATCH_LIB:$FOUNDATION_LIB:$LD_LIBRARY_PATH"
     
     # Help the Clang importer find the Glibc headers
     export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
