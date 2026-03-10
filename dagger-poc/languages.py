@@ -32,16 +32,22 @@ MARCH_NATIVE = "-march=native"
 SWIFT_C_INCLUDE_PATH = (
     "C_INCLUDE_PATH=$(gcc -print-file-name=include)${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
 )
-SWIFT_NIX_EXPR = " ".join("""
-with import <nixpkgs> {}; 
-pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } { 
-    buildInputs = [ swift swiftPackages.Foundation swiftPackages.Dispatch ];
-    shellHook = '''
-        export LD_LIBRARY_PATH="${swiftPackages.Dispatch}/lib:$LD_LIBRARY_PATH"
-        export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
-    ''';
+SWIFT_NIX_CONFIG = """
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } {
+  buildInputs = with pkgs; [ 
+    swift 
+    swiftPackages.Foundation 
+    swiftPackages.Dispatch 
+    gcc
+    binutils
+  ];
+  shellHook = ''
+    export LD_LIBRARY_PATH="${pkgs.swiftPackages.Dispatch}/lib:$LD_LIBRARY_PATH"
+    export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
+  '';
 }
-""".split())
+"""
 
 # =============================================================================
 # Language Configuration
@@ -345,8 +351,7 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            f"nix-shell -E {shlex.quote(SWIFT_NIX_EXPR)} && "
-            f"swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
+            "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
         ),
         run="./leibniz",
         version_cmd="swift --version",
