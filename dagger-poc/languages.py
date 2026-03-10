@@ -53,16 +53,15 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
     export DISPATCH_LIB="${pkgs.swiftPackages.Dispatch}/lib"
     export FOUNDATION_LIB="${pkgs.swiftPackages.Foundation}/lib"
 
-    # We combine -L (for build time) and -Xlinker -rpath (for run time)
-    # This ensures the binary knows exactly where its libraries are forever.
-    export SWIFT_FLAGS="-L $SWIFT_LIB -L $DISPATCH_LIB -L $FOUNDATION_LIB \
-      -Xlinker -rpath -Xlinker $SWIFT_LIB \
-      -Xlinker -rpath -Xlinker $DISPATCH_LIB \
-      -Xlinker -rpath -Xlinker $FOUNDATION_LIB"
+    # This bakes the paths into the binary so it can find them automatically
+    export NIX_LDFLAGS="-rpath $SWIFT_LIB -rpath $DISPATCH_LIB -rpath $FOUNDATION_LIB $NIX_LDFLAGS"
     export LD_LIBRARY_PATH="$SWIFT_LIB:$DISPATCH_LIB:$FOUNDATION_LIB:$LD_LIBRARY_PATH"
     
     # Help the Clang importer find the Glibc headers
     export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
+
+    # Export these so we can use them in the swiftc command easily
+    export SWIFT_FLAGS="-L $SWIFT_LIB -L $DISPATCH_LIB -L $FOUNDATION_LIB"
   '';
 }
 """
