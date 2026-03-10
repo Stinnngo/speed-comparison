@@ -36,10 +36,10 @@ SWIFT_NIX_EXPR = " ".join("""
 with import <nixpkgs> {}; 
 pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } { 
     buildInputs = [ swift swiftPackages.Foundation swiftPackages.Dispatch ];
-    shellHook = ''
+    shellHook = '''
         export LD_LIBRARY_PATH="${swiftPackages.Dispatch}/lib:$LD_LIBRARY_PATH"
         export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
-    '';
+    ''';
 }
 """.split())
 
