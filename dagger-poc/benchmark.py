@@ -301,7 +301,7 @@ async def run_benchmark(
         # Run benchmark with hyperfine
         print(f"  Running: {run_cmd}")
         hyperfine_cmd = (
-            f"hyperfine '{run_cmd}' "
+            f"hyperfine --show-output '{run_cmd}' "
             f"--warmup {WARMUP_RUNS} "
             f"--runs {BENCHMARK_RUNS} "
             f"--time-unit {TIME_UNIT} "
