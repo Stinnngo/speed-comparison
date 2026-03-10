@@ -18,7 +18,7 @@ To add a new language:
 
 from __future__ import annotations
 
-import re, shlex
+import re
 from dataclasses import dataclass
 from typing import Optional
 
@@ -41,6 +41,7 @@ pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } {
     swiftPackages.Dispatch 
     gcc
     binutils
+    lld
   ];
   shellHook = ''
     export LD_LIBRARY_PATH="${pkgs.swiftPackages.Dispatch}/lib:$LD_LIBRARY_PATH"
@@ -351,7 +352,7 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full"
+            "swiftc leibniz.swift -v -O -o leibniz -clang-target native -lto=llvm-full"
         ),
         run="./leibniz",
         version_cmd="swift --version",
