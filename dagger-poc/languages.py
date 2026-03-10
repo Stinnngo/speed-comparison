@@ -51,7 +51,7 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
     # Add Swift runtime and Dispatch/Foundation to the library search paths
     export SWIFT_LIB="${swiftPkg}/lib/swift/linux"
     export DISPATCH_LIB="${pkgs.swiftPackages.Dispatch}/lib"
-    export FOUNDATION_LIB="${pkgs.swiftPackages.Foundation}/lib"
+    export FOUNDATION_LIB="${pkgs.swiftPackages.Foundation}/lib/swift/linux"
 
     # This bakes the paths into the binary so it can find them automatically
     export NIX_LDFLAGS="-rpath $SWIFT_LIB -rpath $DISPATCH_LIB -rpath $FOUNDATION_LIB $NIX_LDFLAGS"
@@ -368,7 +368,7 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full && ldd ./leibniz"
+            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full && ls -R ${pkgs.swiftPackages.Foundation}/lib && ldd ./leibniz"
         ),
         run="./leibniz",
         version_cmd="swift --version",
