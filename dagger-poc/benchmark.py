@@ -271,13 +271,16 @@ async def run_benchmark(
 
         if target.startswith("swift"):
             container = container.with_new_file("/app/swift_env.nix", contents=SWIFT_NIX_CONFIG)
-            lang.compile = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.compile)}"
-            lang.run = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.run)}"
+            compile_cmd = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.compile)}"
+            run_cmd = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.run)}"
+        else:
+            compile_cmd = lang.compile
+            run_cmd = lang.run
 
         # Compile if needed
         if lang.compile:
-            print(f"  Compiling: {lang.compile}")
-            container = await exec_cmd(container, lang, lang.compile)
+            print(f"  Compiling: {compile_cmd}")
+            container = await exec_cmd(container, lang, compile_cmd)
 
         # Get version
         version_cmd = lang.version_cmd or "echo unknown"
@@ -296,14 +299,14 @@ async def run_benchmark(
         print(f"  Version: {version}")
 
         # Run benchmark with hyperfine
-        print(f"  Running: {lang.run}")
+        print(f"  Running: {run_cmd}")
         hyperfine_cmd = (
-            f"hyperfine '{lang.run}' "
+            f"hyperfine '{run_cmd}' "
             f"--warmup {WARMUP_RUNS} "
             f"--runs {BENCHMARK_RUNS} "
             f"--time-unit {TIME_UNIT} "
             f"--export-json hyperfine.json "
-            f"&& {lang.run} > pi.txt"
+            f"&& {run_cmd} > pi.txt"
         )
         container = await exec_cmd(container, lang, hyperfine_cmd)
 
@@ -323,8 +326,8 @@ async def run_benchmark(
         result_content = await container.file("/app/result.json").contents()
         result = json.loads(result_content)
         result["Environment"] = env_info
-        result["Compile"] = lang.compile or ""
-        result["Run"] = lang.run
+        result["Compile"] = compile_cmd or ""
+        result["Run"] = run_cmd
         result["Nixpkgs"] = list(lang.nixpkgs)
         result["NixFlakes"] = list(lang.nix_flakes)
         result["Category"] = lang.category
