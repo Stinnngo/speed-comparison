@@ -42,7 +42,7 @@ from pathlib import Path
 
 import dagger
 
-from languages import LANGUAGES, Language, get_base_image_name, get_language
+from languages import LANGUAGES, Language, SWIFT_NIX_CONFIG, get_base_image_name, get_language
 
 # =============================================================================
 # Configuration
@@ -267,6 +267,11 @@ async def run_benchmark(
         # Ensure the devbox user can write to /app (CI uses non-root user)
         container = ensure_app_writable(container)
         env_info = await collect_environment(container)
+
+        if target.startswith("swift"):
+            container = container.with_new_file("/app/swift_env.nix", contents=SWIFT_NIX_CONFIG)
+            lang.compile = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.compile)}"
+            lang.run = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.run)}"
 
         # Compile if needed
         if lang.compile:
