@@ -59,7 +59,7 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
     export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
 
     # Export these so we can use them in the swiftc command easily
-    export SWIFT_FLAGS="-L $SWIFT_LIB -L $DISPATCH_LIB -L $FOUNDATION_LIB"
+    # export SWIFT_FLAGS="-L $SWIFT_LIB -L $DISPATCH_LIB -L $FOUNDATION_LIB"
   '';
 }
 """
@@ -366,7 +366,7 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full && ldd ./leibniz"
+            "swiftc leibniz.swift -O -o leibniz -clang-target native -lto=llvm-full && ldd ./leibniz"
         ),
         run="./leibniz",
         version_cmd="swift --version",
