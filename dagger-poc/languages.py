@@ -366,9 +366,9 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full && ls -l leibniz"
+            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full"
         ),
-        run="./leibniz",
+        run="ldd ./leibniz && ./leibniz",
         version_cmd="swift --version",
         base="swift",
         category="systems",
