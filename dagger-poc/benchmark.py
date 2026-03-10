@@ -38,6 +38,7 @@ import asyncio
 import json
 import os
 import sys
+import shlex
 from pathlib import Path
 
 import dagger
