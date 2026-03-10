@@ -29,9 +29,6 @@ from typing import Optional
 # Compiler optimization flags for x86_64 targets
 # Note: All builds run on x86_64 Linux (either CI or Fly.io remote builder)
 MARCH_NATIVE = "-march=native"
-SWIFT_C_INCLUDE_PATH = (
-    "C_INCLUDE_PATH=$(gcc -print-file-name=include)${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
-)
 SWIFT_NIX_CONFIG = """
 { pkgs ? import <nixpkgs> {} }:
 let
@@ -43,8 +40,6 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
     swift 
     swiftPackages.Foundation 
     swiftPackages.Dispatch 
-    gcc
-    binutils
     lld
   ];
   shellHook = ''
@@ -57,9 +52,6 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
     
     # Help the Clang importer find the Glibc headers
     export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
-
-    # Export these so we can use them in the swiftc command easily
-    # export SWIFT_FLAGS="-L $SWIFT_LIB -L $DISPATCH_LIB -L $FOUNDATION_LIB"
   '';
 }
 """
