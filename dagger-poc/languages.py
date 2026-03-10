@@ -34,7 +34,11 @@ SWIFT_C_INCLUDE_PATH = (
 )
 SWIFT_NIX_CONFIG = """
 { pkgs ? import <nixpkgs> {} }:
-pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } {
+let
+  # Specifically pull the swift package to access its internal paths
+  swiftPkg = pkgs.swift;
+in
+pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
   buildInputs = with pkgs; [ 
     swift 
     swiftPackages.Foundation 
@@ -44,8 +48,18 @@ pkgs.mkShell.override { inherit (pkgs.swift) stdenv; } {
     lld
   ];
   shellHook = ''
-    export LD_LIBRARY_PATH="${pkgs.swiftPackages.Dispatch}/lib:$LD_LIBRARY_PATH"
+    # Add Swift runtime and Dispatch/Foundation to the library search paths
+    export SWIFT_LIB="${swiftPkg}/lib/swift/linux"
+    export DISPATCH_LIB="${pkgs.swiftPackages.Dispatch}/lib"
+    export FOUNDATION_LIB="${pkgs.swiftPackages.Foundation}/lib"
+    
+    export LD_LIBRARY_PATH="$SWIFT_LIB:$DISPATCH_LIB:$FOUNDATION_LIB:$LD_LIBRARY_PATH"
+    
+    # Help the Clang importer find the Glibc headers
     export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
+    
+    # Export these so we can use them in the swiftc command easily
+    export SWIFT_FLAGS="-L $SWIFT_LIB -L $DISPATCH_LIB -L $FOUNDATION_LIB"
   '';
 }
 """
@@ -352,7 +366,7 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            "swiftc leibniz.swift -v -O -o leibniz -clang-target native -lto=llvm-full"
+            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full && ls -l leibniz"
         ),
         run="./leibniz",
         version_cmd="swift --version",
