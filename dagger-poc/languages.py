@@ -52,9 +52,7 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
     export SWIFT_LIB="${swiftPkg}/lib/swift/linux"
     export DISPATCH_LIB="${pkgs.swiftPackages.Dispatch}/lib"
     export FOUNDATION_LIB="${pkgs.swiftPackages.Foundation}/lib/swift/linux"
-
-    # This bakes the paths into the binary so it can find them automatically
-    export NIX_LDFLAGS="-rpath $SWIFT_LIB -rpath $DISPATCH_LIB -rpath $FOUNDATION_LIB $NIX_LDFLAGS"
+    
     export LD_LIBRARY_PATH="$SWIFT_LIB:$DISPATCH_LIB:$FOUNDATION_LIB:$LD_LIBRARY_PATH"
     
     # Help the Clang importer find the Glibc headers
