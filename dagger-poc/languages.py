@@ -53,7 +53,8 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
     export DISPATCH_LIB="${pkgs.swiftPackages.Dispatch}/lib"
     export FOUNDATION_LIB="${pkgs.swiftPackages.Foundation}/lib"
     
-    export LD_LIBRARY_PATH="$SWIFT_LIB:$DISPATCH_LIB:$FOUNDATION_LIB:$LD_LIBRARY_PATH"
+    # This bakes the paths into the binary so it can find them automatically
+    export NIX_LDFLAGS="-rpath $SWIFT_LIB -rpath $DISPATCH_LIB -rpath $FOUNDATION_LIB $NIX_LDFLAGS"
     
     # Help the Clang importer find the Glibc headers
     export C_INCLUDE_PATH="$(gcc -print-file-name=include):$C_INCLUDE_PATH"
@@ -366,9 +367,9 @@ LANGUAGES: dict[str, Language] = {
         ),
         file="leibniz.swift",
         compile=(
-            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full"
+            "swiftc leibniz.swift $SWIFT_FLAGS -O -o leibniz -clang-target native -lto=llvm-full && ldd ./leibniz"
         ),
-        run="ldd ./leibniz && ./leibniz",
+        run="./leibniz",
         version_cmd="swift --version",
         base="swift",
         category="systems",
