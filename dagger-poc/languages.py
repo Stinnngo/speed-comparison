@@ -352,8 +352,6 @@ LANGUAGES: dict[str, Language] = {
         name="Swift",
         nixpkgs=(
             "swift@5.10.1",
-            "swiftPackages.Foundation@5.10.1",
-            "swift-corelibs-libdispatch@5.10.1",
             "gcc@14.3.0",
         ),
         file="leibniz.swift",
