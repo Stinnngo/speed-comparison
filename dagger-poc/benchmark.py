@@ -269,17 +269,16 @@ async def run_benchmark(
         container = ensure_app_writable(container)
         env_info = await collect_environment(container)
 
+        # Wrap compile command with nix-shell for swift
         if target.startswith("swift"):
             container = container.with_new_file("/app/swift_env.nix", contents=SWIFT_NIX_CONFIG)
             compile_cmd = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.compile)}"
-            run_cmd = f"nix-shell /app/swift_env.nix --run {shlex.quote(lang.run)}"
         else:
             compile_cmd = lang.compile
-            run_cmd = lang.run
 
         # Compile if needed
         if lang.compile:
-            print(f"  Compiling: {compile_cmd}")
+            print(f"  Compiling: {lang.compile}")
             container = await exec_cmd(container, lang, compile_cmd)
 
         # Get version
@@ -299,15 +298,18 @@ async def run_benchmark(
         print(f"  Version: {version}")
 
         # Run benchmark with hyperfine
-        print(f"  Running: {run_cmd}")
+        print(f"  Running: {lang.run}")
         hyperfine_cmd = (
-            f"hyperfine --show-output '{run_cmd}' "
+            f"hyperfine --show-output '{lang.run}' "
             f"--warmup {WARMUP_RUNS} "
             f"--runs {BENCHMARK_RUNS} "
             f"--time-unit {TIME_UNIT} "
             f"--export-json hyperfine.json "
-            f"&& {run_cmd} > pi.txt"
+            f"&& {lang.run} > pi.txt"
         )
+        # Wrap benchmark command with nix-shell for swift
+        if target.startswith("swift"):
+            hyperfine_cmd = f"nix-shell /app/swift_env.nix --run {shlex.quote(hyperfine_cmd)}"
         container = await exec_cmd(container, lang, hyperfine_cmd)
 
         # Run scmeta.py with micropython to generate result JSON
@@ -326,8 +328,8 @@ async def run_benchmark(
         result_content = await container.file("/app/result.json").contents()
         result = json.loads(result_content)
         result["Environment"] = env_info
-        result["Compile"] = compile_cmd or ""
-        result["Run"] = run_cmd
+        result["Compile"] = lang.compile or ""
+        result["Run"] = lang.cmd
         result["Nixpkgs"] = list(lang.nixpkgs)
         result["NixFlakes"] = list(lang.nix_flakes)
         result["Category"] = lang.category
