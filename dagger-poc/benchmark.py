@@ -300,7 +300,7 @@ async def run_benchmark(
         # Run benchmark with hyperfine
         print(f"  Running: {lang.run}")
         hyperfine_cmd = (
-            f"hyperfine --show-output '{lang.run}' "
+            f"hyperfine '{lang.run}' "
             f"--warmup {WARMUP_RUNS} "
             f"--runs {BENCHMARK_RUNS} "
             f"--time-unit {TIME_UNIT} "
@@ -329,7 +329,7 @@ async def run_benchmark(
         result = json.loads(result_content)
         result["Environment"] = env_info
         result["Compile"] = lang.compile or ""
-        result["Run"] = lang.cmd
+        result["Run"] = lang.run
         result["Nixpkgs"] = list(lang.nixpkgs)
         result["NixFlakes"] = list(lang.nix_flakes)
         result["Category"] = lang.category
