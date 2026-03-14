@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]) {
     double x = 1.0;
     double pi = 1.0;
 
-    for (long i = 2; i <= rounds + 2; i++) {
+    for (long i = 2; i < rounds + 2; i++) {
         x *= -1.0;
         pi += x / (2.0 * i - 1.0);
     }
