@@ -177,7 +177,7 @@ class Language:
 
 C_FLAGS = (
     f"-O3 -s -flto {MARCH_NATIVE} -mtune=native -fomit-frame-pointer "
-    "-fno-signed-zeros -fno-trapping-math -fassociative-math"
+    "-fno-signed-zeros -fno-trapping-math"
 )
 CPP_FLAGS = (
     f"-O3 -s -flto {MARCH_NATIVE} -mtune=native -fomit-frame-pointer "
