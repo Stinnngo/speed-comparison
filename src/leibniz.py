@@ -9,7 +9,7 @@ def main():
     x = 1.0
     pi = 1.0
 
-    for i in range(2, rounds + 3):
+    for i in range(2, rounds + 2):
         x = -x
         pi += x / (2 * i - 1)
 
