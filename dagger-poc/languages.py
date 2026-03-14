@@ -177,7 +177,7 @@ class Language:
 
 C_FLAGS = (
     f"-O3 -s -flto {MARCH_NATIVE} -mtune=native -fomit-frame-pointer "
-    "-fno-signed-zeros -fno-trapping-math"
+    "-fno-signed-zeros -fno-trapping-math -fassociative-math"
 )
 CPP_FLAGS = (
     f"-O3 -s -flto {MARCH_NATIVE} -mtune=native -fomit-frame-pointer "
@@ -399,7 +399,7 @@ LANGUAGES: dict[str, Language] = {
         name="Objective-C",
         nixpkgs=("clang@18.1.8", "gnustep-base@1.29.0"),  # 21.1.2/1.30.0 not available
         file="leibniz.m",
-        compile=f"clang {C_FLAGS} $(gnustep-config --objc-flags) $(gnustep-config --base-libs) -o leibniz leibniz.m",
+        compile=f"clang {C_FLAGS} -fno-associative-math $(gnustep-config --objc-flags) $(gnustep-config --base-libs) -o leibniz leibniz.m",
         run="./leibniz",
         version_cmd="clang --version",
         base="objectivec",
