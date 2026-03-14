@@ -22,6 +22,6 @@ int main(int argc, const char * argv[]) {
 
     pi *= 4.0;
 
-    printf("%.17g", pi);
+    printf("%.16f", pi);
     return 0;
 }
