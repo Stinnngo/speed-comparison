@@ -8,20 +8,22 @@ int main(int argc, const char * argv[]) {
         return 1;
     }
 
-    long long rounds;
+    long rounds;
     fscanf(file, "%ld", &rounds);
     fclose(file);
 
     double x = 1.0;
     double pi = 1.0;
 
-    for (long long i = 2; i < rounds + 2; i++) {
+    rounds += 2;
+    
+    for (long i = 2; i < rounds; i++) {
         x *= -1.0;
         pi += x / (2.0 * i - 1.0);
     }
 
     pi *= 4.0;
 
-    printf("%.16f\n", pi);
+    printf("%.17g", pi);
     return 0;
 }
