@@ -397,7 +397,7 @@ LANGUAGES: dict[str, Language] = {
     ),
     "objc": Language(
         name="Objective-C",
-        nixpkgs=("clang@18.1.8", "gnustep-base@1.29.0"),  # 21.1.2/1.30.0 not available
+        nixpkgs=("clang@20.1.8", "gnustep-base@1.29.0"),  # 21.1.2/1.30.0 not available
         file="leibniz.m",
         compile=f"clang {C_FLAGS} -fno-associative-math $(gnustep-config --objc-flags) $(gnustep-config --base-libs) -o leibniz leibniz.m",
         run="./leibniz",
