@@ -848,7 +848,7 @@ LANGUAGES: dict[str, Language] = {
     ),
     "haxe": Language(
         name="Haxe",
-        nixpkgs=("mbedtls_2@2.28.10", "gcc@14.2.0"),
+        nixpkgs=("haxe", "gcc@14.2.0"),
         nix_setup="mkdir -p /tmp/haxelib && haxelib setup /tmp/haxelib && haxelib install hxcpp",
         file="Leibniz.hx",
         compile="haxe -main Leibniz -cpp out",
