@@ -108,6 +108,8 @@ async def build_devbox_image(
             if lang.name == "Haxe":
                 container = container.with_new_file("/app/disable-tests.nix", contents=HAXE_NIX_CONFIG)
                 container = container.with_env_variable("NIX_PATH", "nixpkgs=channel:nixos-unstable:overlays=/app/disable-tests.nix")
+                container = container.with_exec(["sh", "-c", "devbox run -- nix-instantiate --eval -E '(with import <nixpkgs> {}; stdenv.cc.version)'"])
+                container = container.with_exec(["sh", "-c", "devbox run -- gcc --version"])
             container = container.with_exec(
                 ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
             )
