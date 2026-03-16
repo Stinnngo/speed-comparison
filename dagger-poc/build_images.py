@@ -108,6 +108,11 @@ async def build_devbox_image(
             if lang.name == "Haxe":
                 container = container.with_new_file("/app/mbedtls_fix.nix", contents=HAXE_NIX_CONFIG)
                 container = container.with_env_variable("NIX_PATH", "nixpkgs=https://github.com/NixOS/nixpkgs/archive/c0f3d81a7ddbc2b1332be0d8481a672b4f6004d6.tar.gz:overlays=/app/mbedtls_fix.nix")
+                container = container.with_exec(["sh", "-c", "devbox run -- echo $CC"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo $CXX"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo $CPP"])
+                container = container.with_exec(["sh", "-c", "devbox run -- gcc-14 --version"])
+                container = container.with_exec(["sh", "-c", "devbox run -- clang --version"])
             container = container.with_exec(
                 ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
             )
@@ -150,7 +155,7 @@ def get_image_tag(registry: str, target: str, lang: Language) -> str:
     E.g., swift-simd uses the "swift" image.
     """
     base_name = get_base_image_name(target)
-    version = "4.3.6" # lang.primary_version
+    version = lang.primary_version
     # Sanitize version for Docker tag (replace invalid chars)
     version = version.replace("+", "-")
     return f"{registry}/{base_name}:{version}"
