@@ -138,8 +138,7 @@ class Language:
         # Validate nixpkgs have versions
         for pkg in self.nixpkgs:
             if "@" not in pkg:
-                pass
-                # raise ValueError(f"Package '{pkg}' must have version (e.g., '{pkg}@1.0.0')")
+                raise ValueError(f"Package '{pkg}' must have version (e.g., '{pkg}@1.0.0')")
 
     @property
     def icon_key(self) -> str:
@@ -849,7 +848,7 @@ LANGUAGES: dict[str, Language] = {
     ),
     "haxe": Language(
         name="Haxe",
-        nixpkgs=("haxe", "gcc@14.2.0"),
+        nixpkgs=("haxe@4.3.6", "gcc@14.2.0"),
         nix_setup="mkdir -p /tmp/haxelib && haxelib setup /tmp/haxelib && haxelib install hxcpp",
         file="Leibniz.hx",
         compile="haxe -main Leibniz -cpp out",
