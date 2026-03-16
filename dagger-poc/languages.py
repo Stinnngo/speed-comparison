@@ -55,6 +55,19 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
   '';
 }
 """
+HAXE_NIX_CONFIG = """
+self: super: {
+  mbedtls = super.mbedtls.overrideAttrs (old: {
+    # This overrides the flags passed to 'cmake'
+    cmakeFlags = (old.cmakeFlags or []) ++ [
+      "-DENABLE_TESTING=OFF"
+      "-DMBEDTLS_FATAL_WARNINGS=OFF"
+    ];
+    # This tells Nix explicitly to skip the check phase
+    doCheck = false;
+  });
+}
+"""
 
 # =============================================================================
 # Language Configuration
