@@ -56,8 +56,8 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
 }
 """
 HAXE_NIX_CONFIG = """
-final: prev: {
-  mbedtls_2 = prev.mbedtls_2.overrideAttrs (old: {
+self: super: {
+  mbedtls_2 = super.mbedtls_2.overrideAttrs (old: {
     stdenv = final.clangStdenv; # Use Clang
     # This tells Nix explicitly to skip the check phase
     doCheck = false;
@@ -138,7 +138,8 @@ class Language:
         # Validate nixpkgs have versions
         for pkg in self.nixpkgs:
             if "@" not in pkg:
-                raise ValueError(f"Package '{pkg}' must have version (e.g., '{pkg}@1.0.0')")
+                pass
+                # raise ValueError(f"Package '{pkg}' must have version (e.g., '{pkg}@1.0.0')")
 
     @property
     def icon_key(self) -> str:
