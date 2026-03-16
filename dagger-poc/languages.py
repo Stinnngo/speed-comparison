@@ -57,7 +57,7 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
 """
 HAXE_NIX_CONFIG = """
 self: super: {
-  mbedtls = super.mbedtls.overrideAttrs (old: {
+  mbedtls_2 = super.mbedtls_2.overrideAttrs (old: {
     # This overrides the flags passed to 'cmake'
     cmakeFlags = (old.cmakeFlags or []) ++ [
       "-DENABLE_TESTING=OFF"
