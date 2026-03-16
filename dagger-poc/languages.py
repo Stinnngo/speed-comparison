@@ -58,6 +58,7 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
 HAXE_NIX_CONFIG = """
 final: prev: {
   mbedtls_2 = prev.mbedtls_2.overrideAttrs (old: {
+    stdenv = final.clangStdenv; # Use Clang
     # This tells Nix explicitly to skip the check phase
     doCheck = false;
     checkPhase = "true";
