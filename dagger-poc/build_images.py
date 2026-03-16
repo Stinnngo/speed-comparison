@@ -112,8 +112,7 @@ async def build_devbox_image(
                 container = container.with_env_variable("CXX", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/g++")
                 container = container.with_env_variable("CPP", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/cpp")
                 container = container.with_exec(["sh", "-c", "devbox run -- echo $CC && echo $CXX && echo $CPP"])
-                container = container.with_exec(["sh", "-c", "devbox run -- echo /nix/store/1kxmbqsah0bszi95w1ii633vzciqnanx-nix-2.34.0/bin && ls -l /nix/store/1kxmbqsah0bszi95w1ii633vzciqnanx-nix-2.34.0/bin"])
-                container = container.with_exec(["sh", "-c", "devbox run -- echo gcc-root && ls $(which gcc)/.."])
+                container = container.with_exec(["sh", "-c", "devbox run -- cd $(dirname $(which gcc)) && pwd && ls && ls bin"])
                 # container = container.with_exec(["sh", "-c", "devbox run -- clang --version"])
             container = container.with_exec(
                 ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
