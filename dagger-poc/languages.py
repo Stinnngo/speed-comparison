@@ -854,7 +854,7 @@ LANGUAGES: dict[str, Language] = {
         version_cmd="haxe --version",
         base="haxe",
         category="compiled",
-        allow_insecure=("mbedtls-2.28.10",),  # haxe depends on insecure mbedtls
+        # allow_insecure=("mbedtls-2.28.10",),  # haxe depends on insecure mbedtls
     ),
     # =========================================================================
     # WebAssembly
