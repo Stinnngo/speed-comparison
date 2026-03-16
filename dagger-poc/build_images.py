@@ -105,14 +105,10 @@ async def build_devbox_image(
         if lang.allow_insecure:
             insecure_flags = " ".join(f"--allow-insecure={pkg}" for pkg in lang.allow_insecure)
             if lang.name == "Haxe":
-                cmake_flags = "export NIX_CMAKE_FLAGS=\"-DENABLE_TESTING=OFF -DMBEDTLS_FATAL_WARNINGS=OFF\""
-                container = container.with_exec(
-                    ["sh", "-c", f"{cmake_flags} && devbox add {packages_str} {insecure_flags}"]
-                )
-            else:
-                container = container.with_exec(
-                    ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
-                )
+                container = container.with_env_variable("NIX_CMAKE_FLAGS", "-DENABLE_TESTING=OFF -DMBEDTLS_FATAL_WARNINGS=OFF")
+            container = container.with_exec(
+                ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
+            )
         else:
             container = container.with_exec(["sh", "-c", f"devbox add {packages_str}"])
 
