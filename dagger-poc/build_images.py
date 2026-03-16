@@ -108,10 +108,13 @@ async def build_devbox_image(
             if lang.name == "Haxe":
                 container = container.with_new_file("/app/mbedtls_fix.nix", contents=HAXE_NIX_CONFIG)
                 container = container.with_env_variable("NIX_PATH", "nixpkgs=https://github.com/NixOS/nixpkgs/archive/c0f3d81a7ddbc2b1332be0d8481a672b4f6004d6.tar.gz:overlays=/app/mbedtls_fix.nix")
-                container = container.with_exec(["sh", "-c", "devbox run -- echo $CC"])
-                container = container.with_exec(["sh", "-c", "devbox run -- echo $CXX"])
-                container = container.with_exec(["sh", "-c", "devbox run -- echo $CPP"])
-                container = container.with_exec(["sh", "-c", "devbox run -- which gcc"])
+                container = container.with_env_variable("CC", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/gcc")
+                container = container.with_env_variable("CXX", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/g++")
+                container = container.with_env_variable("CPP", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/cpp")
+                container = container.with_exec(["sh", "-c", "devbox run -- echo $CC && echo $CXX && echo $CPP"])
+                # container = container.with_exec(["sh", "-c", "devbox run -- echo $CXX"])
+                # container = container.with_exec(["sh", "-c", "devbox run -- echo $CPP"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo $PATH"])
                 # container = container.with_exec(["sh", "-c", "devbox run -- clang --version"])
             container = container.with_exec(
                 ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
