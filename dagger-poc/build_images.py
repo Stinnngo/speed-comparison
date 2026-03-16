@@ -150,7 +150,7 @@ def get_image_tag(registry: str, target: str, lang: Language) -> str:
     E.g., swift-simd uses the "swift" image.
     """
     base_name = get_base_image_name(target)
-    version = lang.primary_version
+    version = "4.3.6" # lang.primary_version
     # Sanitize version for Docker tag (replace invalid chars)
     version = version.replace("+", "-")
     return f"{registry}/{base_name}:{version}"
