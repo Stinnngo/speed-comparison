@@ -111,8 +111,8 @@ async def build_devbox_image(
                 container = container.with_exec(["sh", "-c", "devbox run -- echo $CC"])
                 container = container.with_exec(["sh", "-c", "devbox run -- echo $CXX"])
                 container = container.with_exec(["sh", "-c", "devbox run -- echo $CPP"])
-                container = container.with_exec(["sh", "-c", "devbox run -- gcc-14 --version"])
-                container = container.with_exec(["sh", "-c", "devbox run -- clang --version"])
+                container = container.with_exec(["sh", "-c", "devbox run -- which gcc"])
+                # container = container.with_exec(["sh", "-c", "devbox run -- clang --version"])
             container = container.with_exec(
                 ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
             )
