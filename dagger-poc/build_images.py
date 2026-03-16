@@ -112,9 +112,13 @@ async def build_devbox_image(
                 container = container.with_env_variable("CXX", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/g++")
                 container = container.with_env_variable("CPP", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/cpp")
                 container = container.with_exec(["sh", "-c", "devbox run -- echo $CC && echo $CXX && echo $CPP"])
-                # container = container.with_exec(["sh", "-c", "devbox run -- echo $CXX"])
-                # container = container.with_exec(["sh", "-c", "devbox run -- echo $CPP"])
-                container = container.with_exec(["sh", "-c", "devbox run -- echo $PATH"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo /home/devbox/.nix-profile/bin && ls -l /home/devbox/.nix-profile/bin"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo /usr/local/sbin && ls -l /usr/local/sbin"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo /usr/local/bin && ls -l /usr/local/bin"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo /usr/sbin && ls -l /usr/sbin"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo /usr/bin && ls -l /usr/bin"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo /sbin && ls -l /sbin"])
+                container = container.with_exec(["sh", "-c", "devbox run -- echo /bin && ls -l /bin"])
                 # container = container.with_exec(["sh", "-c", "devbox run -- clang --version"])
             container = container.with_exec(
                 ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
