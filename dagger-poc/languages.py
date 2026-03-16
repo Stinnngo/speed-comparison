@@ -56,15 +56,16 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
 }
 """
 HAXE_NIX_CONFIG = """
-self: super: {
-  mbedtls_2 = super.mbedtls_2.overrideAttrs (old: {
+final: prev: {
+  mbedtls_2 = prev.mbedtls_2.overrideAttrs (old: {
+    # This tells Nix explicitly to skip the check phase
+    doCheck = false;
+    checkPhase = "true";
     # This overrides the flags passed to 'cmake'
     cmakeFlags = (old.cmakeFlags or []) ++ [
       "-DENABLE_TESTING=OFF"
       "-DMBEDTLS_FATAL_WARNINGS=OFF"
     ];
-    # This tells Nix explicitly to skip the check phase
-    doCheck = false;
   });
 }
 """
@@ -854,7 +855,7 @@ LANGUAGES: dict[str, Language] = {
         version_cmd="haxe --version",
         base="haxe",
         category="compiled",
-        # allow_insecure=("mbedtls-2.28.10",),  # haxe depends on insecure mbedtls
+        allow_insecure=("mbedtls-2.28.10",),  # haxe depends on insecure mbedtls
     ),
     # =========================================================================
     # WebAssembly
