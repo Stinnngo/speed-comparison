@@ -58,7 +58,7 @@ from languages import (
 DEFAULT_REGISTRY = "ghcr.io/niklas-heer/speed-comparison"
 
 # Base image
-DEVBOX_IMAGE = "jetpackio/devbox:0.16.0"
+DEVBOX_IMAGE = "jetpackio/devbox:0.15.0"
 
 # Hyperfine version to include in all images
 HYPERFINE_VERSION = "1.18.0"
@@ -115,7 +115,7 @@ async def build_devbox_image(
                 container = container.with_env_variable("GCC_15_WRAPPER_PATH", "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0")
                 container = container.with_env_variable("GCC_14_PATH", "/nix/store/i0x8f79682yb2cqs6843c9jq6x10rb03-gcc-14.2.0")
                 container = container.with_env_variable("GCC_15_PATH", "/nix/store/sca0pf46jmxva40qahkcwys5c1lvk6n2-gcc-15.2.0")
-                container = container.with_exec(["sh", "-c", "devbox run -- gcc --version && fuck"])
+                container = container.with_exec(["sh", "-c", "devbox run -- gcc --version"])
                 # container = container.with_exec(["sh", "-c", "devbox run -- mkdir -p $GCC_14_WRAPPER_PATH/bin"])
                 # container = container.with_exec(["sh", "-c", "devbox run -- sudo rm -rf $GCC_15_WRAPPER_PATH/bin && sudo ln -s $GCC_14_WRAPPER_PATH/bin $GCC_15_WRAPPER_PATH/bin"])
                 # container = container.with_exec(["sh", "-c", "devbox run -- mkdir -p $GCC_14_PATH/bin"])
