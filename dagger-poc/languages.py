@@ -55,21 +55,6 @@ pkgs.mkShell.override { inherit (swiftPkg) stdenv; } {
   '';
 }
 """
-HAXE_NIX_CONFIG = """
-self: super: {
-  mbedtls_2 = super.mbedtls_2.overrideAttrs (old: {
-    stdenv = final.clangStdenv; # Use Clang
-    # This tells Nix explicitly to skip the check phase
-    doCheck = false;
-    checkPhase = "true";
-    # This overrides the flags passed to 'cmake'
-    cmakeFlags = (old.cmakeFlags or []) ++ [
-      "-DENABLE_TESTING=OFF"
-      "-DMBEDTLS_FATAL_WARNINGS=OFF"
-    ];
-  });
-}
-"""
 
 # =============================================================================
 # Language Configuration
@@ -848,7 +833,7 @@ LANGUAGES: dict[str, Language] = {
     ),
     "haxe": Language(
         name="Haxe",
-        nixpkgs=("haxe@4.3.6", "gcc@14.2.0"),
+        nixpkgs=("haxe_4_0@4.0.5", "gcc@14.2.0"),
         nix_setup="mkdir -p /tmp/haxelib && haxelib setup /tmp/haxelib && haxelib install hxcpp",
         file="Leibniz.hx",
         compile="haxe -main Leibniz -cpp out",
