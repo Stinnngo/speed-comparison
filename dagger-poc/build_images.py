@@ -58,7 +58,7 @@ from languages import (
 DEFAULT_REGISTRY = "ghcr.io/niklas-heer/speed-comparison"
 
 # Base image
-DEVBOX_IMAGE = "jetpackio/devbox:0.15.0"
+DEVBOX_IMAGE = "jetpackio/devbox:0.15.1"
 
 # Hyperfine version to include in all images
 HYPERFINE_VERSION = "1.18.0"
