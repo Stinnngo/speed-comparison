@@ -43,7 +43,6 @@ import dagger
 from languages import (
     LANGUAGES,
     Language,
-    HAXE_NIX_CONFIG,
     get_base_image_name,
     get_base_languages,
     get_language,
@@ -58,7 +57,7 @@ from languages import (
 DEFAULT_REGISTRY = "ghcr.io/niklas-heer/speed-comparison"
 
 # Base image
-DEVBOX_IMAGE = "jetpackio/devbox:0.14.2"
+DEVBOX_IMAGE = "jetpackio/devbox:latest"
 
 # Hyperfine version to include in all images
 HYPERFINE_VERSION = "1.18.0"
@@ -105,22 +104,6 @@ async def build_devbox_image(
         # The flag requires the insecure dependency name(s), not the package being installed
         if lang.allow_insecure:
             insecure_flags = " ".join(f"--allow-insecure={pkg}" for pkg in lang.allow_insecure)
-            if lang.name == "Haxe":
-                container = container.with_new_file("/app/mbedtls_fix.nix", contents=HAXE_NIX_CONFIG)
-                container = container.with_env_variable("NIX_PATH", "nixpkgs=https://github.com/NixOS/nixpkgs/archive/c0f3d81a7ddbc2b1332be0d8481a672b4f6004d6.tar.gz:overlays=/app/mbedtls_fix.nix")
-                container = container.with_env_variable("CC", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/gcc")
-                container = container.with_env_variable("CXX", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/g++")
-                container = container.with_env_variable("CPP", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0/bin/cpp")
-                container = container.with_env_variable("GCC_14_WRAPPER_PATH", "/nix/store/1ciadcliylyyi9vx21id9vi1p1mayjn8-gcc-wrapper-14.2.0")
-                container = container.with_env_variable("GCC_15_WRAPPER_PATH", "/nix/store/kbw2j1vag664b3sj3rjwz9v53cqx87sb-gcc-wrapper-15.2.0")
-                container = container.with_env_variable("GCC_14_PATH", "/nix/store/i0x8f79682yb2cqs6843c9jq6x10rb03-gcc-14.2.0")
-                container = container.with_env_variable("GCC_15_PATH", "/nix/store/sca0pf46jmxva40qahkcwys5c1lvk6n2-gcc-15.2.0")
-                container = container.with_exec(["sh", "-c", "devbox run -- gcc --version"])
-                # container = container.with_exec(["sh", "-c", "devbox run -- mkdir -p $GCC_14_WRAPPER_PATH/bin"])
-                # container = container.with_exec(["sh", "-c", "devbox run -- sudo rm -rf $GCC_15_WRAPPER_PATH/bin && sudo ln -s $GCC_14_WRAPPER_PATH/bin $GCC_15_WRAPPER_PATH/bin"])
-                # container = container.with_exec(["sh", "-c", "devbox run -- mkdir -p $GCC_14_PATH/bin"])
-                # container = container.with_exec(["sh", "-c", "devbox run -- sudo rm -rf $GCC_15_PATH/bin && sudo ln -s $GCC_14_PATH/bin $GCC_15_PATH/bin"])
-                # container = container.with_exec(["sh", "-c", "devbox run -- clang --version"])
             container = container.with_exec(
                 ["sh", "-c", f"devbox add {packages_str} {insecure_flags}"]
             )
