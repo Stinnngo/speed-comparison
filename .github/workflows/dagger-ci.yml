@@ -52,7 +52,7 @@ on:
 
 env:
   REGISTRY: ghcr.io/${{ github.repository }}
-  DAGGER_VERSION: "0.19.8"
+  # DAGGER_VERSION: "0.19.8"
 
 jobs:
   # ==========================================================================
